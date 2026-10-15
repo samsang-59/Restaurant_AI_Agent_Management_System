@@ -1,14 +1,14 @@
 """The LLM side of the agent: understanding the guest and writing replies.
 
-`Brain` is the interface the graph depends on. `ClaudeBrain` implements it with
-Claude through langchain-anthropic; tests substitute a scripted fake.
+`Brain` is the interface the graph depends on. `OpenAIBrain` implements it with
+OpenAI through langchain-openai; tests substitute a scripted fake.
 """
 
 import json
 from typing import Literal, Protocol
 
-from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
 from . import config
@@ -60,21 +60,15 @@ Situations:
 - invalid: politely say you can only help with food orders at this restaurant and that this session is ending."""
 
 
-class ClaudeBrain:
+class OpenAIBrain:
     def __init__(self):
-        llm = ChatAnthropic(
-            model=config.ANTHROPIC_MODEL,
-            effort=config.ANTHROPIC_EFFORT,
-            max_tokens=4096,
-            # Server-side refusal fallback: if the model declines a request, the API
-            # retries on a substitute model instead of returning an empty refusal.
-            betas=["server-side-fallback-2026-07-01"],
-            model_kwargs={"fallbacks": "default"},
-        )
+        kwargs = {"model": config.OPENAI_MODEL}
+        if config.OPENAI_REASONING_EFFORT:
+            kwargs["reasoning_effort"] = config.OPENAI_REASONING_EFFORT
+        llm = ChatOpenAI(**kwargs)
         self._llm = llm
-        # json_schema uses structured outputs (output_config.format) rather than a
-        # forced tool call, which this model family does not accept.
-        self._intent_llm = llm.with_structured_output(Intent, method="json_schema")
+        # json_schema uses OpenAI structured outputs, so the reply always matches Intent.
+        self._intent_llm = llm.with_structured_output(Intent, method="json_schema", strict=True)
 
     def understand(self, user_input, menu, pending_offer, history):
         context = {

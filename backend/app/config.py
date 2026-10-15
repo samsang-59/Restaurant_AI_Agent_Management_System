@@ -11,10 +11,11 @@ def _float(name: str, default: float) -> float:
     return float(os.getenv(name, default))
 
 
-ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-opus-5-5")
-# Reasoning effort for the LLM calls. Intent extraction and short replies are
-# simple tasks, so "low" keeps latency and cost down.
-ANTHROPIC_EFFORT = os.getenv("ANTHROPIC_EFFORT", "low")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5-mini")
+# Reasoning effort for reasoning models (e.g. gpt-5 family). Intent extraction and
+# short replies are simple tasks, so "low" keeps latency and cost down. Set it to
+# an empty value for non-reasoning models such as gpt-4o-mini.
+OPENAI_REASONING_EFFORT = os.getenv("OPENAI_REASONING_EFFORT", "low")
 
 # Each stage may fail at most this many times in one session before the
 # session is ended and a fresh one is started.

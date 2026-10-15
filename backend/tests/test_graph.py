@@ -1,4 +1,4 @@
-"""Flow tests for the LangGraph agent, using a scripted brain instead of Claude
+"""Flow tests for the LangGraph agent, using a scripted brain instead of the real LLM
 and a scripted RNG instead of random cook/serve failures."""
 
 import uuid

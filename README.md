@@ -1,6 +1,6 @@
 # Saffron & Spice — Restaurant AI Agent
 
-A restaurant ordering agent built with **LangGraph** and **Claude**, with a FastAPI backend and a React frontend that shows the agent working live.
+A restaurant ordering agent built with **LangGraph** and **OpenAI**, with a FastAPI backend and a React frontend that shows the agent working live.
 
 ## How it works
 
@@ -42,7 +42,7 @@ The graph runs once per guest message. Between messages, an `InMemorySaver` chec
 backend/
   app/menu.py     predefined menu + thread-safe stock store
   app/tools.py    take_order / cook / serve LangChain tools
-  app/brain.py    Claude: intent + argument extraction, guest replies
+  app/brain.py    OpenAI: intent + argument extraction, guest replies
   app/graph.py    LangGraph StateGraph wiring the flow above
   app/main.py     FastAPI; /api/chat streams each graph step over SSE
   tests/          flow tests with a scripted LLM and kitchen
@@ -57,7 +57,7 @@ Backend (Python 3.11+):
 cd backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env        # set ANTHROPIC_API_KEY
+cp .env.example .env        # set OPENAI_API_KEY
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -79,9 +79,9 @@ cd backend && pytest
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | — | Required |
-| `ANTHROPIC_MODEL` | `claude-opus-5-5` | Claude model |
-| `ANTHROPIC_EFFORT` | `low` | Reasoning effort for the LLM calls |
+| `OPENAI_API_KEY` | — | Required |
+| `OPENAI_MODEL` | `gpt-5-mini` | OpenAI chat model |
+| `OPENAI_REASONING_EFFORT` | `low` | Reasoning effort; leave empty for non-reasoning models (e.g. `gpt-4o-mini`) |
 | `MAX_ATTEMPTS_PER_STAGE` | `3` | Failure limit for each of take_order / cook / serve |
 | `COOK_FAILURE_RATE` / `SERVE_FAILURE_RATE` | `0.2` | Chance of a simulated failure |
 | `COOK_DELAY_SECONDS` / `SERVE_DELAY_SECONDS` | `1.5` / `1.0` | Simulated work time |

@@ -1,5 +1,5 @@
 langgraph==1.2.15
-langchain-anthropic==1.7.6
+langchain-openai==1.7.2
 fastapi==0.143.2
 uvicorn==0.54.0
 python-dotenv==1.2.4

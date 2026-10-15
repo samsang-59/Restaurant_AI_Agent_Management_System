@@ -15,7 +15,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from . import config
-from .brain import ClaudeBrain
+from .brain import OpenAIBrain
 from .graph import build_graph
 from .menu import RESTAURANT_NAME, menu_store
 
@@ -33,7 +33,7 @@ def get_graph():
     global _graph
     with _graph_lock:
         if _graph is None:
-            _graph = build_graph(ClaudeBrain())
+            _graph = build_graph(OpenAIBrain())
         return _graph
 
 
